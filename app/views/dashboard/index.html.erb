@@ -1,0 +1,70 @@
+<% content_for :title, "儀表板" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">儀表板</h1>
+</div>
+
+<%# Job statistics %>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+  <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="text-sm text-gray-500">總職缺</div>
+    <div class="text-2xl font-bold"><%= @total_count %></div>
+  </div>
+  <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="text-sm text-gray-500">已分析</div>
+    <div class="text-2xl font-bold"><%= @analyzed_count %></div>
+  </div>
+  <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="text-sm text-gray-500">高度符合</div>
+    <div class="text-2xl font-bold text-green-600"><%= @high_count %></div>
+  </div>
+  <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="text-sm text-gray-500">中度符合</div>
+    <div class="text-2xl font-bold text-yellow-600"><%= @medium_count %></div>
+  </div>
+  <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="text-sm text-gray-500">低度符合</div>
+    <div class="text-2xl font-bold text-red-600"><%= @low_count %></div>
+  </div>
+  <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="text-sm text-gray-500">本月 API 花費</div>
+    <div class="text-2xl font-bold">$<%= format("%.2f", @month_cost_cents / 100.0) %></div>
+  </div>
+</div>
+
+<%# Recent analyses %>
+<div class="bg-white rounded-lg border border-gray-200">
+  <div class="px-5 py-3 border-b border-gray-200 flex items-center justify-between">
+    <h2 class="font-semibold">最近 5 筆分析</h2>
+    <%= link_to "查看全部職缺 →", job_postings_path, class: "text-sm text-indigo-600 hover:underline" %>
+  </div>
+
+  <% if @recent_analyses.any? %>
+    <table class="w-full text-sm">
+      <thead class="text-left text-gray-500 border-b border-gray-100">
+        <tr>
+          <th class="px-5 py-2 font-medium">公司</th>
+          <th class="px-5 py-2 font-medium">職稱</th>
+          <th class="px-5 py-2 font-medium">匹配度</th>
+          <th class="px-5 py-2 font-medium">日期</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @recent_analyses.each do |analysis| %>
+          <tr class="border-b border-gray-50 hover:bg-gray-50">
+            <td class="px-5 py-2"><%= analysis.job_posting.company_name.presence || "—" %></td>
+            <td class="px-5 py-2">
+              <%= link_to analysis.job_posting.job_title, analysis.job_posting, class: "text-indigo-600 hover:underline" %>
+            </td>
+            <td class="px-5 py-2"><%= render "shared/match_badge", level: analysis.match_level %></td>
+            <td class="px-5 py-2 text-gray-500"><%= l(analysis.created_at, format: :short) rescue analysis.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="px-5 py-8 text-center text-gray-400 text-sm">
+      還沒有任何分析。<%= link_to "新增第一個職缺", new_job_posting_path, class: "text-indigo-600 hover:underline" %>。
+    </div>
+  <% end %>
+</div>

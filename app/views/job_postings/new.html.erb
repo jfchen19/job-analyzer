@@ -1,0 +1,67 @@
+<% content_for :title, "新增職缺" %>
+<h1 class="text-2xl font-bold mb-6">新增職缺</h1>
+
+<%= form_with model: @job_posting, data: { controller: "job-fetch" }, class: "space-y-6" do |f| %>
+  <% if @job_posting.errors.any? %>
+    <div class="rounded-md bg-red-50 border border-red-200 text-red-800 px-4 py-3 text-sm">
+      <p class="font-semibold mb-1"><%= @job_posting.errors.count %> 個欄位有問題:</p>
+      <ul class="list-disc list-inside">
+        <% @job_posting.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# --- Section 1: auto-fill from 104 URL --- %>
+  <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-5">
+    <h2 class="font-semibold text-indigo-900 mb-1">方式一:貼入 104 網址自動帶入</h2>
+    <p class="text-sm text-indigo-700/80 mb-3">
+      貼上 104 職缺連結後按「自動帶入」。
+      <span class="text-indigo-700/60">注意:104 有防爬蟲保護,若抓取失敗請改用下方手動填寫。</span>
+    </p>
+    <div class="flex gap-2">
+      <%= f.url_field :source_url,
+            data: { "job-fetch-target": "url" },
+            placeholder: "https://www.104.com.tw/job/xxxxx",
+            class: "flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" %>
+      <button type="button"
+              data-action="job-fetch#fetch"
+              data-job-fetch-target="button"
+              class="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 whitespace-nowrap">
+        自動帶入
+      </button>
+    </div>
+    <div data-job-fetch-target="status" class="text-sm mt-2"></div>
+  </div>
+
+  <%# --- Section 2: manual form --- %>
+  <div class="bg-white border border-gray-200 rounded-lg p-5 space-y-4">
+    <h2 class="font-semibold mb-1">方式二:手動填寫</h2>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div>
+        <%= f.label :job_title, "職缺標題 *", class: "block text-sm font-medium mb-1" %>
+        <%= f.text_field :job_title, data: { "job-fetch-target": "jobTitle" },
+              class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" %>
+      </div>
+      <div>
+        <%= f.label :company_name, "公司名稱", class: "block text-sm font-medium mb-1" %>
+        <%= f.text_field :company_name, data: { "job-fetch-target": "companyName" },
+              class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :raw_content, "職缺描述 (JD) *", class: "block text-sm font-medium mb-1" %>
+      <%= f.text_area :raw_content, rows: 14, data: { "job-fetch-target": "rawContent" },
+            class: "w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:ring-indigo-500",
+            placeholder: "貼上職缺描述內容…" %>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= f.submit "建立職缺", class: "px-4 py-2 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-700 cursor-pointer" %>
+    <%= link_to "取消", job_postings_path, class: "text-sm text-gray-500 hover:underline" %>
+  </div>
+<% end %>

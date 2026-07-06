@@ -1,0 +1,40 @@
+<% content_for :title, "履歷" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">我的履歷</h1>
+  <%= link_to "＋ 新增履歷", new_resume_path,
+        class: "inline-flex items-center px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700" %>
+</div>
+
+<% if @resumes.any? %>
+  <div class="space-y-3">
+    <% @resumes.each do |resume| %>
+      <div class="bg-white rounded-lg border border-gray-200 p-4 flex items-start justify-between">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h2 class="font-semibold truncate"><%= resume.title %></h2>
+            <% if resume.is_default? %>
+              <span class="inline-flex items-center rounded-full bg-indigo-100 text-indigo-700 px-2 py-0.5 text-xs font-semibold">預設</span>
+            <% end %>
+          </div>
+          <p class="text-sm text-gray-500 mt-1 line-clamp-2 whitespace-pre-line"><%= truncate(resume.content, length: 160) %></p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 ml-4">
+          <% unless resume.is_default? %>
+            <%= button_to "設為預設", set_default_resume_path(resume), method: :put,
+                  class: "px-3 py-1.5 rounded-md border border-gray-300 text-sm hover:bg-gray-50" %>
+          <% end %>
+          <%= link_to "編輯", edit_resume_path(resume),
+                class: "px-3 py-1.5 rounded-md border border-gray-300 text-sm hover:bg-gray-50" %>
+          <%= button_to "刪除", resume_path(resume), method: :delete,
+                form: { data: { turbo_confirm: "確定刪除這份履歷?" } },
+                class: "px-3 py-1.5 rounded-md border border-red-200 text-red-600 text-sm hover:bg-red-50" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-white rounded-lg border border-gray-200 px-5 py-10 text-center text-gray-400 text-sm">
+    還沒有履歷。請先<%= link_to "建立一份履歷", new_resume_path, class: "text-indigo-600 hover:underline" %>並設為預設,才能分析職缺。
+  </div>
+<% end %>

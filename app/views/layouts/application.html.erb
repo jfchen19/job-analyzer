@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Job Analyzer" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50 text-gray-900 min-h-screen">
+    <nav class="bg-white border-b border-gray-200 shadow-sm">
+      <div class="max-w-5xl mx-auto px-5 h-14 flex items-center gap-6">
+        <%= link_to "求職分析工具", root_path, class: "font-semibold text-indigo-600" %>
+        <div class="flex items-center gap-4 text-sm">
+          <%= link_to "儀表板", root_path, class: "text-gray-600 hover:text-indigo-600" %>
+          <%= link_to "職缺", job_postings_path, class: "text-gray-600 hover:text-indigo-600" %>
+          <%= link_to "履歷", resumes_path, class: "text-gray-600 hover:text-indigo-600" %>
+        </div>
+        <div class="ml-auto">
+          <%= link_to "＋ 新增職缺", new_job_posting_path,
+                class: "inline-flex items-center px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700" %>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-5 py-8">
+      <% if notice %>
+        <div class="mb-4 rounded-md bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="mb-4 rounded-md bg-red-50 border border-red-200 text-red-800 px-4 py-3 text-sm"><%= alert %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

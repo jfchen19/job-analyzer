@@ -1,0 +1,35 @@
+<%= form_with model: resume, class: "space-y-5" do |f| %>
+  <% if resume.errors.any? %>
+    <div class="rounded-md bg-red-50 border border-red-200 text-red-800 px-4 py-3 text-sm">
+      <p class="font-semibold mb-1"><%= resume.errors.count %> 個欄位有問題:</p>
+      <ul class="list-disc list-inside">
+        <% resume.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "履歷標題", class: "block text-sm font-medium mb-1" %>
+    <%= f.text_field :title, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500",
+          placeholder: "例如:後端工程師版本" %>
+  </div>
+
+  <div>
+    <%= f.label :content, "履歷內容", class: "block text-sm font-medium mb-1" %>
+    <%= f.text_area :content, rows: 18,
+          class: "w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:ring-indigo-500",
+          placeholder: "貼上你的履歷純文字內容(技術技能、工作經歷、專案經歷…)" %>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <%= f.check_box :is_default, class: "rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
+    <%= f.label :is_default, "設為預設履歷(分析時會用這份)", class: "text-sm" %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= f.submit "儲存", class: "px-4 py-2 rounded-md bg-indigo-600 text-white font-medium hover:bg-indigo-700 cursor-pointer" %>
+    <%= link_to "取消", resumes_path, class: "text-sm text-gray-500 hover:underline" %>
+  </div>
+<% end %>

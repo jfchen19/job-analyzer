@@ -1,0 +1,69 @@
+<% content_for :title, "職缺" %>
+
+<% status_labels = { "pending" => %w[待分析 bg-gray-100 text-gray-700],
+                     "analyzed" => %w[已分析 bg-blue-100 text-blue-700],
+                     "archived" => %w[已封存 bg-gray-100 text-gray-400] } %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">職缺列表</h1>
+  <%= link_to "＋ 新增職缺", new_job_posting_path,
+        class: "inline-flex items-center px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700" %>
+</div>
+
+<% if @job_postings.any? %>
+  <div class="bg-white rounded-lg border border-gray-200 overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="text-left text-gray-500 border-b border-gray-200">
+        <tr>
+          <th class="px-4 py-2 font-medium">公司</th>
+          <th class="px-4 py-2 font-medium">職稱</th>
+          <th class="px-4 py-2 font-medium">匹配度</th>
+          <th class="px-4 py-2 font-medium">狀態</th>
+          <th class="px-4 py-2 font-medium">建立時間</th>
+          <th class="px-4 py-2 font-medium text-right">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @job_postings.each do |jp| %>
+          <% analysis = jp.latest_analysis %>
+          <% label, badge_bg, badge_text = status_labels.fetch(jp.status, [jp.status, "bg-gray-100", "text-gray-700"]) %>
+          <tr class="border-b border-gray-50 hover:bg-gray-50">
+            <td class="px-4 py-3"><%= jp.company_name.presence || "—" %></td>
+            <td class="px-4 py-3">
+              <%= link_to jp.job_title, jp, class: "text-indigo-600 hover:underline font-medium" %>
+            </td>
+            <td class="px-4 py-3">
+              <% if analysis %>
+                <%= render "shared/match_badge", level: analysis.match_level %>
+              <% else %>
+                <span class="text-gray-400">—</span>
+              <% end %>
+            </td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center rounded-full <%= badge_bg %> <%= badge_text %> px-2 py-0.5 text-xs font-semibold"><%= label %></span>
+            </td>
+            <td class="px-4 py-3 text-gray-500 whitespace-nowrap"><%= jp.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-end gap-2 whitespace-nowrap">
+                <%= link_to "查看", jp, class: "px-2.5 py-1 rounded border border-gray-300 text-xs hover:bg-gray-50" %>
+                <% if jp.status == "pending" %>
+                  <%= button_to "分析", analyze_job_posting_path(jp), method: :post,
+                        class: "px-2.5 py-1 rounded bg-indigo-600 text-white text-xs hover:bg-indigo-700" %>
+                <% end %>
+                <% unless jp.status == "archived" %>
+                  <%= button_to "封存", archive_job_posting_path(jp), method: :patch,
+                        form: { data: { turbo_confirm: "確定封存這個職缺?" } },
+                        class: "px-2.5 py-1 rounded border border-gray-300 text-xs hover:bg-gray-50" %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="bg-white rounded-lg border border-gray-200 px-5 py-10 text-center text-gray-400 text-sm">
+    還沒有任何職缺。<%= link_to "新增第一個職缺", new_job_posting_path, class: "text-indigo-600 hover:underline" %>。
+  </div>
+<% end %>
