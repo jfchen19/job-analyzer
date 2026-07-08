@@ -12,10 +12,12 @@
   <div class="flex items-center gap-2 shrink-0">
     <% if @job_posting.status == "pending" %>
       <%= button_to "開始分析", analyze_job_posting_path(@job_posting), method: :post,
-            class: "px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700" %>
+            data: { turbo_submits_with: "分析中…（約需 10–30 秒）" },
+            class: "px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-progress" %>
     <% else %>
       <%= button_to "重新分析", analyze_job_posting_path(@job_posting), method: :post,
-            class: "px-4 py-2 rounded-md border border-gray-300 text-sm hover:bg-gray-50" %>
+            data: { turbo_submits_with: "分析中…（約需 10–30 秒）" },
+            class: "px-4 py-2 rounded-md border border-gray-300 text-sm hover:bg-gray-50 disabled:opacity-60 disabled:cursor-progress" %>
     <% end %>
     <%= link_to "返回列表", job_postings_path, class: "px-4 py-2 rounded-md border border-gray-300 text-sm hover:bg-gray-50" %>
   </div>
