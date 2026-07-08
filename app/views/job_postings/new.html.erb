@@ -13,31 +13,10 @@
     </div>
   <% end %>
 
-  <%# --- Section 1: auto-fill from 104 URL --- %>
-  <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-5">
-    <h2 class="font-semibold text-indigo-900 mb-1">方式一:貼入 104 網址自動帶入</h2>
-    <p class="text-sm text-indigo-700/80 mb-3">
-      貼上 104 職缺連結後按「自動帶入」。
-      <span class="text-indigo-700/60">注意:104 有防爬蟲保護,若抓取失敗請改用下方手動填寫。</span>
-    </p>
-    <div class="flex gap-2">
-      <%= f.url_field :source_url,
-            data: { "job-fetch-target": "url" },
-            placeholder: "https://www.104.com.tw/job/xxxxx",
-            class: "flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" %>
-      <button type="button"
-              data-action="job-fetch#fetch"
-              data-job-fetch-target="button"
-              class="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 whitespace-nowrap">
-        自動帶入
-      </button>
-    </div>
-    <div data-job-fetch-target="status" class="text-sm mt-2"></div>
-  </div>
-
-  <%# --- Section 2: manual form --- %>
+  <%# --- Section 1: manual form (primary, reliable) --- %>
   <div class="bg-white border border-gray-200 rounded-lg p-5 space-y-4">
-    <h2 class="font-semibold mb-1">方式二:手動填寫</h2>
+    <h2 class="font-semibold mb-1">方式一:手動填寫（推薦）</h2>
+    <p class="text-sm text-gray-500 mb-1">從 104 職缺頁把職稱與 JD 內容複製貼上,最穩定。</p>
 
     <div class="grid sm:grid-cols-2 gap-4">
       <div>
@@ -58,6 +37,28 @@
             class: "w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:ring-indigo-500",
             placeholder: "貼上職缺描述內容…" %>
     </div>
+  </div>
+
+  <%# --- Section 2: best-effort auto-fill from 104 URL (often blocked) --- %>
+  <div class="bg-gray-50 border border-gray-200 rounded-lg p-5">
+    <h2 class="font-semibold text-gray-700 mb-1">方式二:貼 104 網址嘗試自動帶入（常失敗）</h2>
+    <p class="text-sm text-amber-700 mb-3">
+      ⚠️ 104 有 Cloudflare 防爬蟲保護,伺服器端抓取<strong>大多會被擋</strong>。
+      抓不到是正常的,請改用上方「方式一」手動貼上。
+    </p>
+    <div class="flex gap-2">
+      <%= f.url_field :source_url,
+            data: { "job-fetch-target": "url" },
+            placeholder: "https://www.104.com.tw/job/xxxxx",
+            class: "flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500" %>
+      <button type="button"
+              data-action="job-fetch#fetch"
+              data-job-fetch-target="button"
+              class="px-4 py-2 rounded-md bg-gray-600 text-white text-sm font-medium hover:bg-gray-700 whitespace-nowrap">
+        試著自動帶入
+      </button>
+    </div>
+    <div data-job-fetch-target="status" class="text-sm mt-2"></div>
   </div>
 
   <div class="flex items-center gap-3">
