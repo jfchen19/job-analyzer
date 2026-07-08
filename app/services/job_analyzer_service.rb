@@ -42,7 +42,7 @@ class JobAnalyzerService
     end
 
     raw = extract_text(response)
-    parsed = JSON.parse(raw) rescue nil
+    parsed = parse_json(raw)
 
     if parsed.nil?
       # Keep the raw response so we can debug malformed model output.
@@ -90,6 +90,25 @@ class JobAnalyzerService
       .map(&:text)
       .join
       .strip
+  end
+
+  # Parse the model's reply into a Hash, tolerating common wrappers the model
+  # may add despite the "JSON only" instruction: ```json fences, or a sentence
+  # of prose before/after the object.
+  def parse_json(raw)
+    return nil if raw.blank?
+
+    text = raw.strip
+    if text.start_with?("```")
+      text = text.sub(/\A```[a-zA-Z]*\s*/, "").sub(/```\s*\z/, "").strip
+    end
+
+    JSON.parse(text)
+  rescue JSON::ParserError
+    # Last resort: grab the first {...} block anywhere in the text.
+    if (m = raw.match(/\{.*\}/m))
+      JSON.parse(m[0]) rescue nil
+    end
   end
 
   def user_prompt
