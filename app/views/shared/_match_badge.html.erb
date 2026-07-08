@@ -1,7 +1,10 @@
 <%#
   Renders a match_level badge. Usage:
-    <%= render "shared/match_badge", level: analysis.match_level %>
-    <%= render "shared/match_badge", level: "high", size: :lg %>
+    render "shared/match_badge", level: analysis.match_level
+    render "shared/match_badge", level: "high", size: :lg
+  (NOTE: keep the ERB output delimiters OUT of this comment — a stray
+   closing tag ends the comment early and turns the example into real code,
+   which self-renders this partial and blows the stack.)
 %>
 <% level = local_assigns[:level].to_s
    size  = local_assigns.fetch(:size, :sm)
