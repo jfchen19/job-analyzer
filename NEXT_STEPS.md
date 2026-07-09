@@ -16,6 +16,16 @@
 - **#1 履歷只能貼純文字,不支援 PDF 上傳(backlog)**:`resumes` 只有 `content:text` 欄位,
   沒接 ActiveStorage。要 PDF 需加附件欄位 + 抽文字(如 `pdf-reader`)。歸到「之後 A」。
 
+## 已完成的里程碑 (2026-07-08)
+- **D. RSpec 測試地基與核心單元驗證** ✓ DONE
+  - 基建：rspec-rails / webmock / factory_bot / shoulda-matchers 到位
+  - 核心單元測試：CostCalculator、LlmUsageTracker、JobAnalyzerService、FetchJobContentService
+  - Model 驗證：4 個 model specs（Resume、Job、Analysis、UsageRecord）
+  - 三層 API 防護：(1) WebMock disable_net_connect，(2) Anthropic client stub，(3) .env.test 假 key
+  - 全套驗收：48 examples, 0 failures
+  - 留待後續：feature/request/system specs
+  - final review 的 4 個 Low nit 已補齊 ✓（cost_dollars 非整除案例、sibling parsed_* 覆蓋、extract_text 過濾非-text block、Gemfile 空行）。全套 54 examples, 0 failures。
+
 ## 立即(讓基本功能真的能動)
 1. 填 key 跑一次真實分析——這是唯一還沒被真跑過的一段(API 呼叫 → JSON parse → 建 Analysis → 記 UsageRecord):
    ```
@@ -32,8 +42,7 @@
 - **A. 更好用**:cover letter markdown 匯出 / 投遞狀態追蹤(投遞→面試→結果)/ 多履歷選擇
 - **B. cost dashboard 深化**(你原訂目標):成本按 model / 日 / 職缺拆解 + 趨勢
 - **C. evals**(最能提升「LLM 專案」成色):用 golden set 量分析準不準
-- **D. RSpec**:CostCalculator(含未知 model raise)、JobAnalyzerService 的 JSON rescue、FetchJobContentService
-- **E.**(低優先)Ferrum 版 104 抓取、Render 部署
+- **D.**(低優先)Ferrum 版 104 抓取、Render 部署
 
 ## 工作模式提醒(這個 session 談定的)
 - 大任務派 subagent(指揮官不下場),驗收派 fresh agent,不自驗(見 ~/Documents/claude-agent/000_Agent/protocols/model-dispatch.md)。
