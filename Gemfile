@@ -26,8 +26,6 @@ gem "anthropic"
 gem "http"
 # HTML parsing fallback for scraped pages
 gem "nokogiri"
-# Extract text from uploaded resume PDFs
-gem "pdf-reader", "~> 2.12"
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

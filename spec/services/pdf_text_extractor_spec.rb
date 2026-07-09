@@ -22,8 +22,9 @@ RSpec.describe PdfTextExtractor do
     expect(result[:error]).to be_present
   end
 
-  it "加密 PDF(PDF::Reader raise)回 error、不 raise" do
-    allow(PDF::Reader).to receive(:new).and_raise(PDF::Reader::MalformedPDFError.new("encrypted"))
+  it "pdftotext 執行失敗時回 error、不 raise" do
+    failed = instance_double(Process::Status, success?: false, exitstatus: 1)
+    allow(Open3).to receive(:capture3).and_return(["", "boom", failed])
     result = described_class.new(StringIO.new(pdf_with_text)).call
     expect(result[:success]).to be(false)
     expect(result[:error]).to be_present

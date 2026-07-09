@@ -17,8 +17,8 @@ module PdfFixtures
     Prawn::Document.new { |_pdf| }.render
   end
 
-  # A PDF with large vertical gaps between blocks, so pdf-reader emits runs of
-  # blank lines — used to verify #normalize collapses them.
+  # A PDF with large vertical gaps between blocks, which the extractor turns
+  # into runs of blank lines — used to verify #normalize collapses them.
   def pdf_with_gaps
     Prawn::Document.new do
       text "John Doe"
