@@ -24,11 +24,7 @@
   - 三層 API 防護：(1) WebMock disable_net_connect，(2) Anthropic client stub，(3) .env.test 假 key
   - 全套驗收：48 examples, 0 failures
   - 留待後續：feature/request/system specs
-  - 後續可補的 4 個測試 nit（final review 判定非阻擋，之後順手）：
-    1. `cost_dollars` 目前用 150→1.5 剛好整除，沒真的驗到 `.round(4)`（改用如 12345→123.45）
-    2. `parsed_matched_skills` / `parsed_skill_gaps` 未測（是 `parsed_key_requirements` 的雙胞胎）
-    3. `extract_text` 未餵非-text block，`.select { type == :text }` 過濾沒驗到
-    4. Gemfile 新增 `group :test` 後尾端多一個空行（純美觀）
+  - final review 的 4 個 Low nit 已補齊 ✓（cost_dollars 非整除案例、sibling parsed_* 覆蓋、extract_text 過濾非-text block、Gemfile 空行）。全套 54 examples, 0 failures。
 
 ## 立即(讓基本功能真的能動)
 1. 填 key 跑一次真實分析——這是唯一還沒被真跑過的一段(API 呼叫 → JSON parse → 建 Analysis → 記 UsageRecord):

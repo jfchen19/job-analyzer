@@ -99,5 +99,15 @@ RSpec.describe JobAnalyzerService do
       response = double("response", content: blocks)
       expect(service.send(:extract_text, response)).to eq("前段後段")
     end
+
+    it "過濾掉非 :text 的 block（例如 tool_use）" do
+      blocks = [
+        double(type: :text, text: "保留"),
+        double(type: :tool_use, text: "應被略過"),
+        double(type: :text, text: "這段")
+      ]
+      response = double("response", content: blocks)
+      expect(service.send(:extract_text, response)).to eq("保留這段")
+    end
   end
 end

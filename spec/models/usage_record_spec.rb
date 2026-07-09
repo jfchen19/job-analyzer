@@ -9,5 +9,10 @@ RSpec.describe UsageRecord do
       record = build(:usage_record, cost_cents: 150)
       expect(record.cost_dollars).to eq(1.5)
     end
+
+    it "非整除的 cents 也正確換算（不是剛好 .0/.5）" do
+      record = build(:usage_record, cost_cents: 12345)
+      expect(record.cost_dollars).to eq(123.45)
+    end
   end
 end

@@ -70,4 +70,3 @@ group :test do
   gem "webmock", "~> 3.24"
   gem "shoulda-matchers", "~> 6.4"
 end
-
