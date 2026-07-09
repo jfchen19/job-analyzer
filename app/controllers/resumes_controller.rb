@@ -38,7 +38,27 @@ class ResumesController < ApplicationController
     redirect_to resumes_path, notice: "履歷已刪除"
   end
 
+  MAX_PDF_BYTES = 10.megabytes
+
+  # Extract text from an uploaded PDF and return JSON. Creates/stores nothing.
+  def extract_pdf
+    file = params[:pdf]
+    return render_pdf_error("請先選擇 PDF 檔") if file.blank?
+    return render_pdf_error("檔案過大,請壓縮或改用貼上") if file.size > MAX_PDF_BYTES
+
+    result = PdfTextExtractor.new(file.tempfile).call
+    if result[:success]
+      render json: { text: result[:text] }
+    else
+      render_pdf_error(result[:error])
+    end
+  end
+
   private
+
+  def render_pdf_error(message)
+    render json: { error: message }, status: :unprocessable_entity
+  end
 
   def set_resume
     @resume = Resume.find(params[:id])
