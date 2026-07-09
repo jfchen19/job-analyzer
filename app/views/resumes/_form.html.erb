@@ -1,4 +1,4 @@
-<%= form_with model: resume, class: "space-y-5" do |f| %>
+<%= form_with model: resume, data: { controller: "resume-pdf" }, class: "space-y-5" do |f| %>
   <% if resume.errors.any? %>
     <div class="rounded-md bg-red-50 border border-red-200 text-red-800 px-4 py-3 text-sm">
       <p class="font-semibold mb-1"><%= resume.errors.count %> 個欄位有問題:</p>
@@ -16,11 +16,29 @@
           placeholder: "例如:後端工程師版本" %>
   </div>
 
+  <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+    <p class="text-sm font-medium mb-1">從 PDF 帶入(選用)</p>
+    <p class="text-xs text-gray-500 mb-2">選一份可選取文字的 PDF 履歷,按「帶入」把內容填進下方,存檔前可再修改。</p>
+    <div class="flex items-center gap-2">
+      <input type="file" accept="application/pdf"
+             data-resume-pdf-target="file"
+             class="text-sm file:mr-2 file:rounded file:border-0 file:bg-indigo-600 file:text-white file:px-3 file:py-1.5 file:cursor-pointer">
+      <button type="button"
+              data-action="resume-pdf#extract"
+              data-resume-pdf-target="button"
+              class="px-3 py-1.5 rounded-md bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 whitespace-nowrap">
+        帶入
+      </button>
+    </div>
+    <div data-resume-pdf-target="status" class="text-sm mt-2"></div>
+  </div>
+
   <div>
     <%= f.label :content, "履歷內容", class: "block text-sm font-medium mb-1" %>
     <%= f.text_area :content, rows: 18,
+          data: { "resume-pdf-target": "content" },
           class: "w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:ring-indigo-500",
-          placeholder: "貼上你的履歷純文字內容(技術技能、工作經歷、專案經歷…)" %>
+          placeholder: "貼上你的履歷純文字內容,或用上方 PDF 帶入" %>
   </div>
 
   <div class="flex items-center gap-2">
