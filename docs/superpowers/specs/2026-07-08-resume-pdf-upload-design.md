@@ -79,23 +79,29 @@ PDF 只是「填 `resume.content` 的便利工具」。上傳的 PDF 抽成純�
 - 檔案大小上限（10MB）避免記憶體爆掉。
 - content textarea 仍可手動編輯 / 貼上，PDF 上傳是額外入口而非取代。
 
-## 驗證方式（重要：本專案目前無自動測試框架）
+## 驗證方式（已更新：專案已於 2026-07-08 建立 RSpec 測試體系）
 
-本專案沒有 `spec/` 也沒有 `test/`（app 以 `--skip-test` 生成），現行驗證慣例是
-**runner 實跑 + fresh verifier agent read-back**。因此本 feature **不**順帶引入測試框架
-（那是 NEXT_STEPS「D. RSpec」的獨立決策）。驗證改為：
+原 spec 寫「專案無測試框架」已過時——RSpec 測試地基（rspec-rails/webmock/factory_bot/
+shoulda）已 merge 進 main。本 feature 直接用 RSpec 補測：
 
-- 用 `bin/rails runner` 拿一個小的可選取文字 PDF 實跑 `PdfTextExtractor`，確認抽出文字。
-- 對加密 PDF / 圖檔型 PDF / 非 PDF 各跑一次，確認回對應 error、不 raise。
+- **`spec/services/pdf_text_extractor_spec.rb`（必要）**：用 fixture PDF 驗
+  - 正常可選取文字 PDF → 回 `{ success: true, text: ... }` 且含預期文字。
+  - 加密 PDF → 回 `{ success: false, error: ... }`、不 raise。
+  - 圖檔型（無文字層）PDF → 回空字判定的 error、不 raise。
+  - 非 PDF 檔（如純文字/亂數 bytes）→ 回 error、不 raise。
+  - fixtures 放 `spec/fixtures/files/`，計畫階段說明如何產生（正常 PDF 可用 Prawn 產；
+    加密/圖檔型/非 PDF 各以最小 fixture 提供）。
+- **`spec/requests/resumes_extract_pdf_spec.rb`（採用）**：POST `/resumes/extract_pdf`
+  - 帶合法 PDF（`fixture_file_upload`）→ 200 且 JSON `text` 有值。
+  - 帶非 PDF → 422 且 JSON `error`。
+  - 超過大小上限 → 422 且 JSON `error`。
+- 沿用測試不碰外部的既有防護（WebMock net-block）；PdfTextExtractor 純本地解析、無外部呼叫。
 - 手動走一次 UI：new 履歷頁選 PDF → 帶入 → textarea 出現文字 → 存 → 用它分析一個職缺。
-- 最後派 fresh verifier agent 逐條 read-back。
-
-> 待使用者複審時定案：是否要為 `PdfTextExtractor` 加一套最小 Minitest（Rails 內建、成本低），
-> 或維持上述 runner + verifier 慣例。預設走慣例。
+- 最後派 fresh verifier agent 逐條 read-back + `bundle exec rspec` 全綠。
 
 ## 明確不做（YAGNI）
 
 - 不存 PDF 原檔、不裝 ActiveStorage。
 - 不做 PDF 原生送 Claude。
 - 不做多履歷選擇 / cover letter 匯出（NEXT_STEPS 其他項）。
-- 不在此 feature 建整套測試框架。
+- 不做 controller/feature/system specs 以外的擴張（沿用 RSpec 既有範圍：單元 + request）。
