@@ -4,13 +4,16 @@ require_relative "../support/pdf_fixtures"
 RSpec.describe "履歷 PDF 上傳帶入", type: :system do
   include PdfFixtures
 
-  # attach_file 需要磁碟上的檔案路徑;把 prawn 產生的 PDF bytes 寫到暫存檔。
+  # 瀏覽器上傳需要磁碟上的檔案路徑;把 prawn 產生的 PDF bytes 寫到暫存檔。
+  # 用 after 清掉(Tempfile.create 的 class-method 形式不會自動刪)。
+  after { File.unlink(@pdf_path) if @pdf_path && File.exist?(@pdf_path) }
+
   def pdf_fixture_path(text)
     file = Tempfile.create(["resume", ".pdf"])
     file.binmode
     file.write(pdf_with_text(text))
     file.close
-    file.path
+    @pdf_path = file.path
   end
 
   it "選 PDF → 按帶入 → 文字填進 content → 存檔成功" do
