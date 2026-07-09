@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   resources :resumes do
     member { put :set_default }
+    collection do
+      post :extract_pdf
+    end
   end
 
   resources :job_postings do

@@ -13,8 +13,9 @@
   但 104 在 Cloudflare challenge 後面,純 server 端 HTTP 被回 403「Just a moment」,
   service 註解自己也寫「沒 live-verify 過」。真要通得用 headless browser(見 E)。
   短修:`new.html.erb` 把「手動填寫」升為方式一(推薦)、自動帶入降方式二並加強警語。
-- **#1 履歷只能貼純文字,不支援 PDF 上傳(backlog)**:`resumes` 只有 `content:text` 欄位,
-  沒接 ActiveStorage。要 PDF 需加附件欄位 + 抽文字(如 `pdf-reader`)。歸到「之後 A」。
+- **#1 履歷只能貼純文字,不支援 PDF 上傳(已完成)**:PDF 上傳 → pdf-reader 抽文字 → 帶入 content
+  (不存原檔),含 PdfTextExtractor 單元 spec 與 `extract_pdf` request spec,前端 Stimulus controller
+  + 表單上傳區塊(new/edit 共用 `_form.html.erb`)。
 
 ## 已完成的里程碑 (2026-07-08)
 - **D. RSpec 測試地基與核心單元驗證** ✓ DONE
