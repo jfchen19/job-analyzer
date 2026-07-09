@@ -34,4 +34,19 @@ RSpec.describe PdfTextExtractor do
     expect(result[:success]).to be(false)
     expect(result[:error]).to be_present
   end
+
+  describe "#normalize（私有，send 測）" do
+    it "把多餘的連續空白行壓成單一空行、去掉每行尾端空白" do
+      ext = described_class.new(nil)
+      raw = "A\n\n\n\nB\n   \n\n\nC   \n"
+      expect(ext.send(:normalize, raw)).to eq("A\n\nB\n\nC")
+    end
+
+    it "抽出的文字不含 3 個以上連續換行(端到端,以有間距的 PDF)" do
+      result = described_class.new(StringIO.new(pdf_with_gaps)).call
+      expect(result[:success]).to be(true)
+      expect(result[:text]).not_to match(/\n{3,}/)
+      expect(result[:text]).to include("EXPERIENCE").and include("SKILLS")
+    end
+  end
 end

@@ -30,7 +30,14 @@ class PdfTextExtractor
 
   def extract_text
     reader = PDF::Reader.new(@io)
-    reader.pages.map(&:text).join("\n").strip
+    normalize(reader.pages.map(&:text).join("\n"))
+  end
+
+  # pdf-reader 用大量換行還原版面垂直間距,常產生成串多餘空白行。這裡去掉每行
+  # 尾端空白,並把「連續 3 個以上的換行」壓成「一個空白行」——保留段落/區塊分隔,
+  # 去掉噪音。
+  def normalize(text)
+    text.lines.map(&:rstrip).join("\n").gsub(/\n{3,}/, "\n\n").strip
   end
 
   def failure(message)
