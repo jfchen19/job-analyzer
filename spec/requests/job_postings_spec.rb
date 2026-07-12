@@ -69,4 +69,28 @@ RSpec.describe "JobPostings", type: :request do
       expect(response).to redirect_to(job_postings_path)
     end
   end
+
+  describe "POST /job_postings/fetch_content（stub 服務，不碰 104/網路）" do
+    it "抓取成功回 200 與帶入欄位" do
+      allow(FetchJobContentService).to receive(:new).and_return(
+        instance_double(FetchJobContentService, call: {
+          success: true, job_title: "Rails Engineer", company_name: "Acme", raw_content: "JD 內容"
+        })
+      )
+      post fetch_content_job_postings_path, params: { source_url: "https://www.104.com.tw/job/abc" }
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+      expect(body["job_title"]).to eq("Rails Engineer")
+      expect(body["raw_content"]).to eq("JD 內容")
+    end
+
+    it "抓取失敗回 422 與 error" do
+      allow(FetchJobContentService).to receive(:new).and_return(
+        instance_double(FetchJobContentService, call: { success: false, error: "無法自動抓取" })
+      )
+      post fetch_content_job_postings_path, params: { source_url: "https://www.104.com.tw/job/abc" }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to be_present
+    end
+  end
 end
