@@ -9,7 +9,7 @@ RSpec.describe JobAnalyzerService do
   def fake_response(text)
     usage = double("usage", input_tokens: 1000, output_tokens: 500)
     block = double("block", type: :text, text: text)
-    double("response", usage: usage, content: [block])
+    double("response", usage: usage, content: [ block ])
   end
 
   # 把 LlmUsageTracker.client 換成回傳指定 response 的假 client
@@ -22,9 +22,9 @@ RSpec.describe JobAnalyzerService do
   let(:valid_json) do
     JSON.generate(
       "match_level" => "high",
-      "key_requirements" => ["Rails", "SQL"],
-      "matched_skills" => ["Rails"],
-      "skill_gaps" => ["K8s"],
+      "key_requirements" => [ "Rails", "SQL" ],
+      "matched_skills" => [ "Rails" ],
+      "skill_gaps" => [ "K8s" ],
       "cover_letter_suggestion" => "強調 Rails 經驗"
     )
   end
@@ -36,7 +36,7 @@ RSpec.describe JobAnalyzerService do
       analysis = service.analyze
       expect(analysis).to be_a(Analysis)
       expect(analysis.match_level).to eq("high")
-      expect(analysis.parsed_key_requirements).to eq(["Rails", "SQL"])
+      expect(analysis.parsed_key_requirements).to eq([ "Rails", "SQL" ])
       expect(job_posting.reload.status).to eq("analyzed")
     end
 
@@ -95,7 +95,7 @@ RSpec.describe JobAnalyzerService do
 
   describe "#extract_text（私有，send 測）" do
     it "串接所有 type == :text 的 block" do
-      blocks = [double(type: :text, text: "前段"), double(type: :text, text: "後段")]
+      blocks = [ double(type: :text, text: "前段"), double(type: :text, text: "後段") ]
       response = double("response", content: blocks)
       expect(service.send(:extract_text, response)).to eq("前段後段")
     end

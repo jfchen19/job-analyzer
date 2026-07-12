@@ -5,7 +5,7 @@ RSpec.describe "POST /resumes/extract_pdf" do
   include PdfFixtures
 
   def upload(bytes, filename:, type:)
-    file = Tempfile.new(["u", File.extname(filename)])
+    file = Tempfile.new([ "u", File.extname(filename) ])
     file.binmode
     file.write(bytes)
     file.rewind

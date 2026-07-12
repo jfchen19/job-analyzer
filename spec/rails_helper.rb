@@ -49,7 +49,7 @@ require "capybara/cuprite"
 Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(
     app,
-    window_size: [1200, 900],
+    window_size: [ 1200, 900 ],
     headless: true,
     browser_options: { "no-sandbox": nil }
   )
