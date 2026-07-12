@@ -93,4 +93,14 @@ RSpec.describe "JobPostings", type: :request do
       expect(response.parsed_body["error"]).to be_present
     end
   end
+
+  describe "DELETE /job_postings/:id" do
+    it "刪除職缺並導回列表" do
+      posting = create(:job_posting)
+      expect {
+        delete job_posting_path(posting)
+      }.to change(JobPosting, :count).by(-1)
+      expect(response).to redirect_to(job_postings_path)
+    end
+  end
 end
