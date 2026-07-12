@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# merge 前機械靜態檢查 gate（dev-workflow 第 1 關）
+#   rubocop        風格 + 部分過時寫法
+#   brakeman       安全漏洞（有警告即失敗）
+#   bundler-audit  依賴 gem 的已知 CVE
+# 用法：bin/check   任一項未通過 → 非零退出。三項全跑完才回報，方便一次看完所有問題。
+set -uo pipefail
+cd "$(dirname "$0")/.." || exit 1
+
+fail=0
+run() {
+  local label="$1"; shift
+  echo ""
+  echo "==> ${label}"
+  if "$@"; then
+    echo "    PASS"
+  else
+    echo "    FAIL"
+    fail=1
+  fi
+}
+
+run "rubocop (style + 過時寫法)" bin/rubocop
+# EOLRails 是「Rails 版本已到 EOL」的日曆提醒，非每次 commit 能修的程式問題，
+# 留著會讓 gate 永遠紅；升級 Rails 是另一件獨立的事，不在此 gate 內判。
+run "brakeman (安全掃描)"        bin/brakeman -q --exit-on-warn --except EOLRails
+run "bundler-audit (gem CVE)"    bundle exec bundler-audit check --update
+
+echo ""
+echo "======================================"
+if [ "${fail}" -ne 0 ]; then
+  echo "bin/check: 有項目未通過（見上）"
+  exit 1
+fi
+echo "bin/check: 全部通過"

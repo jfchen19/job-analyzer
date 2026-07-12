@@ -10,8 +10,8 @@ RSpec.describe Analysis do
 
   describe "#parsed_key_requirements" do
     it "合法 JSON 解析為陣列" do
-      analysis = build(:analysis, key_requirements: JSON.generate(["a", "b"]))
-      expect(analysis.parsed_key_requirements).to eq(["a", "b"])
+      analysis = build(:analysis, key_requirements: JSON.generate([ "a", "b" ]))
+      expect(analysis.parsed_key_requirements).to eq([ "a", "b" ])
     end
 
     it "壞掉的 JSON 回空陣列" do
@@ -22,8 +22,8 @@ RSpec.describe Analysis do
 
   describe "#parsed_matched_skills" do
     it "合法 JSON 解析為陣列" do
-      analysis = build(:analysis, matched_skills: JSON.generate(["Rails"]))
-      expect(analysis.parsed_matched_skills).to eq(["Rails"])
+      analysis = build(:analysis, matched_skills: JSON.generate([ "Rails" ]))
+      expect(analysis.parsed_matched_skills).to eq([ "Rails" ])
     end
 
     it "壞掉的 JSON 回空陣列" do
@@ -34,8 +34,8 @@ RSpec.describe Analysis do
 
   describe "#parsed_skill_gaps" do
     it "合法 JSON 解析為陣列" do
-      analysis = build(:analysis, skill_gaps: JSON.generate(["K8s"]))
-      expect(analysis.parsed_skill_gaps).to eq(["K8s"])
+      analysis = build(:analysis, skill_gaps: JSON.generate([ "K8s" ]))
+      expect(analysis.parsed_skill_gaps).to eq([ "K8s" ])
     end
 
     it "壞掉的 JSON 回空陣列" do

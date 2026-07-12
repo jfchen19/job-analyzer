@@ -36,7 +36,7 @@ class PdfTextExtractor
     bytes = @io.read
     raise "empty input" if bytes.nil? || bytes.empty?
 
-    Tempfile.create(["resume", ".pdf"], binmode: true) do |file|
+    Tempfile.create([ "resume", ".pdf" ], binmode: true) do |file|
       file.write(bytes)
       file.flush
       out, err, status = Open3.capture3("pdftotext", "-layout", file.path, "-")

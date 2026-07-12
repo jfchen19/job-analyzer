@@ -1,0 +1,15 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 84,
+      "fingerprint": "fb42c929f4aac3767ec4607a318860eb9cea499584d3953a9456c45176c82147",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/job_postings/show.html.erb",
+      "line": 8,
+      "note": "已修：href 改用 JobPosting#safe_source_url，只在 http(s) 時回傳網址，javascript:/data: 一律回 nil（見 spec/models/job_posting_spec.rb #safe_source_url）。brakeman 靜態分析看不懂 regex guard，此為已審查的 false positive。"
+    }
+  ],
+  "brakeman_version": "8.0.5"
+}

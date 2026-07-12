@@ -24,7 +24,7 @@ RSpec.describe PdfTextExtractor do
 
   it "pdftotext 執行失敗時回 error、不 raise" do
     failed = instance_double(Process::Status, success?: false, exitstatus: 1)
-    allow(Open3).to receive(:capture3).and_return(["", "boom", failed])
+    allow(Open3).to receive(:capture3).and_return([ "", "boom", failed ])
     result = described_class.new(StringIO.new(pdf_with_text)).call
     expect(result[:success]).to be(false)
     expect(result[:error]).to be_present

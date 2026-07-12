@@ -37,7 +37,7 @@ class JobAnalyzerService
         model: model,
         max_tokens: MAX_TOKENS,
         system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: user_prompt }]
+        messages: [ { role: "user", content: user_prompt } ]
       )
     end
 

@@ -9,7 +9,7 @@ RSpec.describe "履歷 PDF 上傳帶入", type: :system do
   after { File.unlink(@pdf_path) if @pdf_path && File.exist?(@pdf_path) }
 
   def pdf_fixture_path(text)
-    file = Tempfile.create(["resume", ".pdf"])
+    file = Tempfile.create([ "resume", ".pdf" ])
     file.binmode
     file.write(pdf_with_text(text))
     file.close

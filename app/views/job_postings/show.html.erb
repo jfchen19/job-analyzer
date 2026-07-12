@@ -4,9 +4,11 @@
   <div class="min-w-0">
     <h1 class="text-2xl font-bold truncate"><%= @job_posting.job_title %></h1>
     <p class="text-gray-500 mt-1"><%= @job_posting.company_name.presence || "（未填公司名稱）" %></p>
-    <% if @job_posting.source_url.present? %>
-      <%= link_to "查看原始職缺 ↗", @job_posting.source_url, target: "_blank", rel: "noopener",
+    <% if @job_posting.safe_source_url %>
+      <%= link_to "查看原始職缺 ↗", @job_posting.safe_source_url, target: "_blank", rel: "noopener",
             class: "text-sm text-indigo-600 hover:underline" %>
+    <% elsif @job_posting.source_url.present? %>
+      <p class="text-sm text-gray-500 break-all"><%= @job_posting.source_url %></p>
     <% end %>
   </div>
   <div class="flex items-center gap-2 shrink-0">
