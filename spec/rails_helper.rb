@@ -43,6 +43,20 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+
+require "capybara/cuprite"
+
+Capybara.register_driver(:cuprite) do |app|
+  Capybara::Cuprite::Driver.new(
+    app,
+    window_size: [1200, 900],
+    headless: true,
+    browser_options: { "no-sandbox": nil }
+  )
+end
+Capybara.javascript_driver = :cuprite
+Capybara.default_max_wait_time = 5
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
@@ -80,4 +94,6 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+
+  config.before(:each, type: :system) { driven_by :cuprite }
 end
