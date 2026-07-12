@@ -35,4 +35,14 @@ RSpec.describe "Resumes", type: :request do
       expect(response).to redirect_to(resumes_path)
     end
   end
+
+  describe "DELETE /resumes/:id" do
+    it "刪除履歷並導回列表" do
+      resume = create(:resume)
+      expect {
+        delete resume_path(resume)
+      }.to change(Resume, :count).by(-1)
+      expect(response).to redirect_to(resumes_path)
+    end
+  end
 end
