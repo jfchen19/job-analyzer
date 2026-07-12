@@ -1,8 +1,8 @@
 # job_analyzer — 下一步
 
-> 狀態(2026-07-08):MVP 已建好,fresh verifier 驗收 7/7 PASS,7 個 staged commits(未 push)。
-> 有一個**未 commit** 的改動:`app/services/job_analyzer_service.rb` 的 `parse_json`
-> JSON 容錯(剝 ```json code fence / 抓第一個 {...}),已過單元測試,等真實 API 跑過再連同後續一起 commit。
+> 狀態(2026-07-12):MVP 完成並已真跑過;測試 88 examples / 0 failures;
+> code review / merge-gate 機制已建(見下方里程碑)。main 乾淨、無未 commit 變更、只剩一條 branch。
+> 開發用 `bin/dev`、merge 前跑 `bin/check`(專案規則見 `CLAUDE.md` → dev-workflow protocol)。
 
 ## 真跑後發現的問題(2026-07-08,填 key 首次操作 UI)
 - **#2 分析等待無回饋(已修 · commit A)**:`analyze` 是同步呼叫 LLM(10~30 秒),
@@ -26,18 +26,25 @@
   - 全套驗收：48 examples, 0 failures
   - 留待後續：feature/request/system specs
   - final review 的 4 個 Low nit 已補齊 ✓（cost_dollars 非整除案例、sibling parsed_* 覆蓋、extract_text 過濾非-text block、Gemfile 空行）。全套 54 examples, 0 failures。
+- **測試補強：request + system spec** ✓ DONE
+  - 補齊 controller 全 action 的 request spec（含 #4 _match_badge 遞迴回歸、fetch_content/destroy）+ PDF 上傳 system spec。全套 85 examples, 0 failures。
 
-## 立即(讓基本功能真的能動)
-1. 填 key 跑一次真實分析——這是唯一還沒被真跑過的一段(API 呼叫 → JSON parse → 建 Analysis → 記 UsageRecord):
-   ```
-   cd ~/Documents/job_analyzer
-   cp .env.example .env      # 填入真的 ANTHROPIC_API_KEY(ANTHROPIC_MODEL 保持 claude-sonnet-4-6)
-   bin/dev                   # http://localhost:3000
-   ```
-   流程:履歷 → 編輯預設那份貼真履歷(保持 default) → 新增職缺貼真 JD → 分析 → 看四區塊有沒有出來。
-   確認記帳:`bin/rails console` → `UsageRecord.last`(要有 model / tokens / cost_cents)。
-   出錯就看畫面紅色 flash + `log/development.log` 最後幾行(service 有 log raw 回應/錯誤類別)。
-2. 跑通後:commit 那個 parse_json 容錯(併入這輪的修正)。
+- **Code review 機制 / merge gate** ✓ DONE (2026-07-12)
+  - 起因：發現專案沒有任何 code review 機制（寫錯 / 用了過時寫法 / 埋安全漏洞都無人擋）。
+  - **制度層**（claude-agent repo）：新增 `dev-workflow.md` protocol——**merge 前三道關**
+    ① 機械檢查 `bin/check` ② fresh reviewer（`superpowers:requesting-code-review` skill 讀 branch diff）
+    ③ **使用者實測拍板才 merge**。工具中立 + 「新專案沒 gate 就就地建/降級明說」+ Rails 範本。
+  - **專案層**：`bin/check`（rubocop + brakeman + bundler-audit），brakeman 跳過 EOLRails 日曆提醒。（merge `0f29639`）
+  - 機制自證：第 1 關一跑抓到 42 排版 offense + 1 個真的 `source_url` `javascript:` XSS
+    → 修（`JobPosting#safe_source_url` 只放行 http(s) + 測試 + 已審查的 `config/brakeman.ignore`）
+    → 第 2 關 fresh opus review 通過 → 第 3 關實測（curl 驗 render HTML）拍板。
+  - 新增專案 `CLAUDE.md` pointer 檔（指向 dev-workflow + 專案特有規則：bin/dev、測試不碰 API）。（merge `8ead2ea`）
+  - 全套 88 examples, 0 failures；`bin/check` 全綠；main 只剩一條、舊 branch 已清。
+
+## 立即(讓基本功能真的能動) ✓ 已完成
+1. **填 key 真跑分析** ✓——API 呼叫 → JSON parse → 建 Analysis → 記 UsageRecord 這條 pipeline
+   已真跑過(就是那次真跑才發現上面 #2/#3 幾個 UI 問題)。
+2. **parse_json 容錯** ✓——已 commit(`d5a9ac1`,剝 ```json code fence / 抓第一個 {...}),含單元測試。
 
 ## 之後(擇一,依你想往哪偏)
 - **A. 更好用**:cover letter markdown 匯出 / 投遞狀態追蹤(投遞→面試→結果)/ 多履歷選擇
