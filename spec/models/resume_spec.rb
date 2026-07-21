@@ -15,6 +15,13 @@ RSpec.describe Resume do
       create(:resume, is_default: false)
       expect(described_class.default_resume).to be_nil
     end
+
+    it "萬一同時有多筆 is_default（繞過 callback），穩定回傳 id 最小那筆" do
+      first = create(:resume, is_default: true)
+      second = create(:resume, is_default: false)
+      second.update_column(:is_default, true) # 繞過 before_save，模擬異常資料
+      expect(described_class.default_resume).to eq(first)
+    end
   end
 
   describe "設為 default 時清掉其他 default" do
