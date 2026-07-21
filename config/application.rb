@@ -38,5 +38,9 @@ module JobAnalyzer
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # This app has no attachments, so skip the boot-time warning about
+    # image_processing being required for Active Storage variants.
+    config.active_storage.variant_processor = :disabled
   end
 end
