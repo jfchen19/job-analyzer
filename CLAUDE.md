@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Rails 8.1 求職分析工具：貼一則 JD → 呼叫 Anthropic API 對照預設履歷產出匹配分析 → 記錄 token 用量與成本。PostgreSQL + Hotwire（importmap / Stimulus / Turbo）+ Tailwind，無 background job、無 Active Storage。
+Rails 8.1 求職分析工具：貼一則 JD → 呼叫 Anthropic API 對照預設履歷產出匹配分析 → 記錄 token 用量與成本。PostgreSQL + Hotwire（importmap / Stimulus / Turbo）+ Tailwind。沒有 background job（`app/jobs/` 只有 scaffold 的基底類別），也沒有用到檔案附件——Active Storage 有隨 Rails 載入，但沒有任何 `has_one_attached`、也沒有對應資料表。
 
 ## 指令
 

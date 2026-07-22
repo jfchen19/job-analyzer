@@ -30,15 +30,18 @@ LLM 走 Anthropic 官方 `anthropic` gem，預設 model 為 `claude-sonnet-4-6`�
 ```bash
 git clone <this-repo>
 cd job_analyzer
-bin/setup
 
 cp .env.example .env
 # 編輯 .env，填入你的 ANTHROPIC_API_KEY
+
+bin/setup
 ```
+
+先填 `.env` 再跑 `bin/setup`——後者會安裝相依套件、建好資料庫，然後直接把開發伺服器起起來。不想讓它自動啟動就加 `--skip-server`。
 
 `.env` 已被 gitignore，key 不會進版本控制。
 
-啟動開發環境：
+之後要再啟動：
 
 ```bash
 bin/dev
@@ -46,7 +49,7 @@ bin/dev
 
 用 `bin/dev` 而不是 `rails server`——它會同時起 Rails 與 Tailwind 的 watcher，直接跑 `rails server` 的話改了樣式不會重新編譯。
 
-首次啟動後先到「履歷」建立一份並設為預設，才能開始分析職缺。
+`bin/setup` 會種一筆佔位用的預設履歷，內容是「請替換成你的實際履歷內容」之類的字樣。開始分析之前先去「履歷」把它編輯成你自己的內容。
 
 ## 測試
 
