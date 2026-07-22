@@ -10,20 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_06_084631) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_084631) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "analyses", force: :cascade do |t|
-    t.bigint "job_posting_id", null: false
-    t.bigint "resume_id", null: false
-    t.string "match_level"
-    t.text "key_requirements"
-    t.text "matched_skills"
-    t.text "skill_gaps"
     t.text "cover_letter_suggestion"
-    t.text "raw_response"
     t.datetime "created_at", null: false
+    t.bigint "job_posting_id", null: false
+    t.text "key_requirements"
+    t.string "match_level"
+    t.text "matched_skills"
+    t.text "raw_response"
+    t.bigint "resume_id", null: false
+    t.text "skill_gaps"
     t.datetime "updated_at", null: false
     t.index ["job_posting_id"], name: "index_analyses_on_job_posting_id"
     t.index ["resume_id"], name: "index_analyses_on_resume_id"
@@ -31,34 +31,34 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_06_084631) do
 
   create_table "job_postings", force: :cascade do |t|
     t.string "company_name"
+    t.datetime "created_at", null: false
     t.string "job_title", null: false
     t.text "raw_content", null: false
     t.string "source_url"
     t.string "status", default: "pending"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_job_postings_on_created_at"
     t.index ["status"], name: "index_job_postings_on_status"
   end
 
   create_table "resumes", force: :cascade do |t|
-    t.string "title", null: false
     t.text "content", null: false
-    t.boolean "is_default", default: false, null: false
     t.datetime "created_at", null: false
+    t.boolean "is_default", default: false, null: false
+    t.string "title", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "usage_records", force: :cascade do |t|
-    t.string "provider", default: "anthropic", null: false
-    t.string "model", null: false
-    t.integer "input_tokens", default: 0, null: false
-    t.integer "output_tokens", default: 0, null: false
     t.integer "cost_cents", default: 0, null: false
-    t.string "request_label"
-    t.string "recordable_type"
-    t.bigint "recordable_id"
     t.datetime "created_at", null: false
+    t.integer "input_tokens", default: 0, null: false
+    t.string "model", null: false
+    t.integer "output_tokens", default: 0, null: false
+    t.string "provider", default: "anthropic", null: false
+    t.bigint "recordable_id"
+    t.string "recordable_type"
+    t.string "request_label"
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_usage_records_on_created_at"
     t.index ["recordable_type", "recordable_id"], name: "index_usage_records_on_recordable"

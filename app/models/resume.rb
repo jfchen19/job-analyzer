@@ -8,7 +8,7 @@ class Resume < ApplicationRecord
   # returns nil (no default exists) silently returns `all` instead — which
   # would break callers that check `Resume.default_resume.nil?`.
   def self.default_resume
-    where(is_default: true).first
+    where(is_default: true).order(:id).first
   end
 
   before_save :unset_other_defaults, if: -> { is_default? }

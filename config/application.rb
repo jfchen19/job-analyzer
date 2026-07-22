@@ -21,7 +21,7 @@ Bundler.require(*Rails.groups)
 module JobAnalyzer
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.2
+    config.load_defaults 8.1
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -38,5 +38,9 @@ module JobAnalyzer
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # This app has no attachments, so skip the boot-time warning about
+    # image_processing being required for Active Storage variants.
+    config.active_storage.variant_processor = :disabled
   end
 end
