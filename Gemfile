@@ -71,7 +71,7 @@ end
 
 group :test do
   gem "webmock", "~> 3.24"
-  gem "shoulda-matchers", "~> 6.4"
+  gem "shoulda-matchers", "~> 8.0"
   gem "prawn", "~> 2.5"
   gem "capybara", "~> 3.40"
   gem "cuprite", "~> 0.15"
