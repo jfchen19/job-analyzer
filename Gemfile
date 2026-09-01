@@ -70,7 +70,7 @@ group :development do
 end
 
 group :test do
-  gem "webmock", "~> 3.24"
+  gem "webmock", "~> 3.26"
   gem "shoulda-matchers", "~> 6.4"
   gem "prawn", "~> 2.5"
   gem "capybara", "~> 3.40"
