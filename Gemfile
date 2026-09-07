@@ -74,5 +74,5 @@ group :test do
   gem "shoulda-matchers", "~> 6.4"
   gem "prawn", "~> 2.5"
   gem "capybara", "~> 3.40"
-  gem "cuprite", "~> 0.15"
+  gem "cuprite", "~> 0.18"
 end
